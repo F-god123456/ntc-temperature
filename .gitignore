@@ -1,0 +1,30 @@
+# 编译输出
+*.o
+*.d
+*.crf
+*.dep
+*.lnp
+*.sct
+*.axf
+*.hex
+*.htm
+*.iex
+
+# 生成文件
+User/Objects/
+User/Listings/
+*.map
+*.bak
+*.iex
+
+# IDE 配置
+DebugConfig/
+*.uvoptx
+*.uvguix
+JLink*.txt
+JLink*.log
+*.scvd
+
+# 系统
+.DS_Store
+Thumbs.db
