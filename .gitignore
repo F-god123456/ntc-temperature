@@ -1,0 +1,38 @@
+# Keil MDK 生成文件
+Listings/
+Objects/
+*.o
+*.d
+*.crf
+*.dep
+*.lnp
+*.iex
+*.htm
+*.sct
+*.map
+*.axf
+*.hex
+*.bin
+*.lib
+
+# Keil IDE 用户配置
+*.uvguix.*
+*.uvoptx
+
+# JLink 调试配置
+JLinkLog.txt
+JLinkSettings.ini
+*.jlink
+
+# Debug
+DebugConfig/
+
+# 系统文件
+*.bak
+*.~*
+*.swp
+Thumbs.db
+.DS_Store
+
+# Claude
+.claude/
