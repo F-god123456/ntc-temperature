@@ -12,6 +12,15 @@
 #define  T_MAX     120
 #define  T_MIN     -40
 
+/* GPIO与ADC引脚定义 */
+#define NTC_GPIO_PORT       GPIOB
+#define NTC_GPIO_PIN        GPIO_Pin_0
+#define NTC_GPIO_CLK        RCC_AHBPeriph_GPIOB
+#define NTC_ADC             ADC1
+#define NTC_ADC_CHANNEL     ADC_Channel_8
+#define NTC_ADC_CLK         RCC_APB2Periph_ADC1
+#define NTC_ADC_IRQn        ADC1_COMP_IRQn
+
 /*参数说明*/
 extern float T;//当前温度
 extern float T_temp[5];//5秒内记录的温度，用于计算平均值

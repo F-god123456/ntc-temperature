@@ -1,19 +1,19 @@
-#include "main.h"
+ï»¿#include "main.h"
 
 /*
-	STM32F030K6T6 °´¼ü¿ÚÏß·ÖÅä£º
+	STM32F030K6T6 æŒ‰é”®å¼•è„šåˆ†é…ï¼š
 
-		KEY_MENU ¼ü      : PB0    (µÍµçÆ½±íÊ¾°´ÏÂ)
-		KEY_UP ¼ü        : PB1    (µÍµçÆ½±íÊ¾°´ÏÂ)
-		KEY_DOWN ¼ü      : PB2    (µÍµçÆ½±íÊ¾°´ÏÂ)
-		KEY_RETURN ¼ü    : PB3    (µÍµçÆ½±íÊ¾°´ÏÂ)
-		KEY_ONOFF ¼ü     : PB4    (µÍµçÆ½±íÊ¾°´ÏÂ)
+		KEY_MENU         : PB9    (ä½ç”µå¹³è¡¨ç¤ºæŒ‰ä¸‹)
+		KEY_UP           : PB1    (ä½ç”µå¹³è¡¨ç¤ºæŒ‰ä¸‹)
+		KEY_DOWN         : PB2    (ä½ç”µå¹³è¡¨ç¤ºæŒ‰ä¸‹)
+		KEY_RETURN       : PB3    (ä½ç”µå¹³è¡¨ç¤ºæŒ‰ä¸‹)
+		KEY_ONOFF        : PB4    (ä½ç”µå¹³è¡¨ç¤ºæŒ‰ä¸‹)
 */
 
 static KEY_T s_tBtn[KEY_COUNT];
-static KEY_FIFO_T s_tKey;		/* °´¼üFIFO±äÁ¿,½á¹¹Ìå */
+static KEY_FIFO_T s_tKey;		/* æŒ‰é”®FIFOå˜é‡,ç»“æ„ä½“ */
 
-static uint8_t Key4_turn=0;//×·×Ù°´¼üK4µÄ×´Ì¬±ä»¯
+static uint8_t Key4_turn=0;//è¿½è¸ªæŒ‰é”®K4çš„çŠ¶æ€å˜åŒ–
 
 static void bsp_InitKeyVar(void);
 static void bsp_InitKeyHard(void);
@@ -23,12 +23,12 @@ static void bsp_DetectKey(uint8_t i);
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: IsKeyDown1
-*	¹¦ÄÜËµÃ÷: ¼ì²âÖ¸¶¨µÄ°´¼üÊÇ·ñ±»°´ÏÂ
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: 
-*			1 - °´¼ü±»°´ÏÂ
-*			0 - °´¼üÎ´±»°´ÏÂ
+*	å‡½ æ•° å: IsKeyDown1
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹æŒ‡å®šçš„æŒ‰é”®æ˜¯å¦è¢«æŒ‰ä¸‹
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: 
+*			1 - æŒ‰é”®è¢«æŒ‰ä¸‹
+*			0 - æŒ‰é”®æœªè¢«æŒ‰ä¸‹
 *********************************************************************************************************
 */
 static uint8_t IsKeyDown1(void)
@@ -41,12 +41,12 @@ static uint8_t IsKeyDown1(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: IsKeyDown2
-*	¹¦ÄÜËµÃ÷: ¼ì²âÖ¸¶¨µÄ°´¼üÊÇ·ñ±»°´ÏÂ
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: 
-*			1 - °´¼ü±»°´ÏÂ
-*			0 - °´¼üÎ´±»°´ÏÂ
+*	å‡½ æ•° å: IsKeyDown2
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹æŒ‡å®šçš„æŒ‰é”®æ˜¯å¦è¢«æŒ‰ä¸‹
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: 
+*			1 - æŒ‰é”®è¢«æŒ‰ä¸‹
+*			0 - æŒ‰é”®æœªè¢«æŒ‰ä¸‹
 *********************************************************************************************************
 */
 static uint8_t IsKeyDown2(void)
@@ -59,12 +59,12 @@ static uint8_t IsKeyDown2(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: IsKeyDown3
-*	¹¦ÄÜËµÃ÷: ¼ì²âÖ¸¶¨µÄ°´¼üÊÇ·ñ±»°´ÏÂ
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: 
-*			1 - °´¼ü±»°´ÏÂ
-*			0 - °´¼üÎ´±»°´ÏÂ
+*	å‡½ æ•° å: IsKeyDown3
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹æŒ‡å®šçš„æŒ‰é”®æ˜¯å¦è¢«æŒ‰ä¸‹
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: 
+*			1 - æŒ‰é”®è¢«æŒ‰ä¸‹
+*			0 - æŒ‰é”®æœªè¢«æŒ‰ä¸‹
 *********************************************************************************************************
 */
 static uint8_t IsKeyDown3(void)
@@ -76,12 +76,12 @@ static uint8_t IsKeyDown3(void)
 }
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: IsKeyDown4
-*	¹¦ÄÜËµÃ÷: ¼ì²âÖ¸¶¨µÄ°´¼üÊÇ·ñ±»°´ÏÂ
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: 
-*			1 - °´¼ü±»°´ÏÂ
-*			0 - °´¼üÎ´±»°´ÏÂ
+*	å‡½ æ•° å: IsKeyDown4
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹æŒ‡å®šçš„æŒ‰é”®æ˜¯å¦è¢«æŒ‰ä¸‹
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: 
+*			1 - æŒ‰é”®è¢«æŒ‰ä¸‹
+*			0 - æŒ‰é”®æœªè¢«æŒ‰ä¸‹
 *********************************************************************************************************
 */
 static uint8_t IsKeyDown4(void)
@@ -94,12 +94,12 @@ static uint8_t IsKeyDown4(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: IsKeyDown5
-*	¹¦ÄÜËµÃ÷: ¼ì²âÖ¸¶¨µÄ°´¼üÊÇ·ñ±»°´ÏÂ
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: 
-*			1 - °´¼ü±»°´ÏÂ
-*			0 - °´¼üÎ´±»°´ÏÂ
+*	å‡½ æ•° å: IsKeyDown5
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹æŒ‡å®šçš„æŒ‰é”®æ˜¯å¦è¢«æŒ‰ä¸‹
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: 
+*			1 - æŒ‰é”®è¢«æŒ‰ä¸‹
+*			0 - æŒ‰é”®æœªè¢«æŒ‰ä¸‹
 *********************************************************************************************************
 */
 static uint8_t IsKeyDown5(void)	
@@ -112,24 +112,24 @@ static uint8_t IsKeyDown5(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_InitKey
-*	¹¦ÄÜËµÃ÷: ³õÊ¼»¯°´¼ü. ¸Ãº¯Êı±» bsp_Init() µ÷ÓÃ¡£
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_InitKey
+*	åŠŸèƒ½è¯´æ˜: åˆå§‹åŒ–æŒ‰é”®. è¯¥å‡½æ•°è¢« bsp_Init() è°ƒç”¨ã€‚
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 void bsp_InitKey(void)
 {
-	bsp_InitKeyVar();			/* ³õÊ¼»¯°´¼ü±äÁ¿ */
-	bsp_InitKeyHard();		    /* ³õÊ¼»¯°´¼üÓ²¼ş */
+	bsp_InitKeyVar();			/* åˆå§‹åŒ–æŒ‰é”®å˜é‡ */
+	bsp_InitKeyHard();		    /* åˆå§‹åŒ–æŒ‰é”®ç¡¬ä»¶ */
 }
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_PutKey
-*	¹¦ÄÜËµÃ÷: ½«1¸ö¼üÖµÑ¹Èë°´¼üFIFO»º³åÇø¡£¿ÉÓÃÓÚÄ£ÄâÒ»¸ö°´¼ü¡£
-*	ĞÎ    ²Î:  _KeyCode : °´¼ü´úÂë
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_PutKey
+*	åŠŸèƒ½è¯´æ˜: å°†1ä¸ªé”®å€¼å‹å…¥æŒ‰é”®FIFOç¼“å†²åŒºã€‚å¯ç”¨äºæ¨¡æ‹Ÿä¸€ä¸ªæŒ‰é”®ã€‚
+*	å½¢    å‚:  _KeyCode : æŒ‰é”®ä»£ç 
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 void bsp_PutKey(uint8_t _KeyCode)
@@ -144,10 +144,10 @@ void bsp_PutKey(uint8_t _KeyCode)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_GetKey
-*	¹¦ÄÜËµÃ÷: ´Ó°´¼üFIFO»º³åÇø¶ÁÈ¡Ò»¸ö¼üÖµ¡£
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: °´¼ü´úÂë
+*	å‡½ æ•° å: bsp_GetKey
+*	åŠŸèƒ½è¯´æ˜: ä»æŒ‰é”®FIFOç¼“å†²åŒºè¯»å–ä¸€ä¸ªé”®å€¼ã€‚
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æŒ‰é”®ä»£ç 
 *********************************************************************************************************
 */
 uint8_t bsp_GetKey(void)
@@ -172,10 +172,10 @@ uint8_t bsp_GetKey(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_GetKey2
-*	¹¦ÄÜËµÃ÷: ´Ó°´¼üFIFO»º³åÇø¶ÁÈ¡Ò»¸ö¼üÖµ¡£¶ÀÁ¢µÄ¶ÁÖ¸Õë¡£
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: °´¼ü´úÂë
+*	å‡½ æ•° å: bsp_GetKey2
+*	åŠŸèƒ½è¯´æ˜: ä»æŒ‰é”®FIFOç¼“å†²åŒºè¯»å–ä¸€ä¸ªé”®å€¼ã€‚ç‹¬ç«‹çš„è¯»æŒ‡é’ˆã€‚
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æŒ‰é”®ä»£ç 
 *********************************************************************************************************
 */
 uint8_t bsp_GetKey2(void)
@@ -200,10 +200,10 @@ uint8_t bsp_GetKey2(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_GetKeyState
-*	¹¦ÄÜËµÃ÷: ¶ÁÈ¡°´¼üµÄ×´Ì¬
-*	ĞÎ    ²Î:  _ucKeyID : °´¼üID£¬´Ó0¿ªÊ¼
-*	·µ »Ø Öµ: 1 ±íÊ¾°´ÏÂ£¬ 0 ±íÊ¾Î´°´ÏÂ
+*	å‡½ æ•° å: bsp_GetKeyState
+*	åŠŸèƒ½è¯´æ˜: è¯»å–æŒ‰é”®çš„çŠ¶æ€
+*	å½¢    å‚:  _ucKeyID : æŒ‰é”®IDï¼Œä»0å¼€å§‹
+*	è¿” å› å€¼: 1 è¡¨ç¤ºæŒ‰ä¸‹ï¼Œ 0 è¡¨ç¤ºæœªæŒ‰ä¸‹
 *********************************************************************************************************
 */
 uint8_t bsp_GetKeyState(KEY_ID_E _ucKeyID)
@@ -213,27 +213,27 @@ uint8_t bsp_GetKeyState(KEY_ID_E _ucKeyID)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_SetKeyParam
-*	¹¦ÄÜËµÃ÷: ÉèÖÃ°´¼ü²ÎÊı
-*	ĞÎ    ²Î£º_ucKeyID : °´¼üID£¬´Ó0¿ªÊ¼
-*			_LongTime : ³¤°´ÊÂ¼şÊ±¼ä
-*			 _RepeatSpeed : Á¬·¢ËÙ¶È
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_SetKeyParam
+*	åŠŸèƒ½è¯´æ˜: è®¾ç½®æŒ‰é”®å‚æ•°
+*	å½¢    å‚ï¼š_ucKeyID : æŒ‰é”®IDï¼Œä»0å¼€å§‹
+*			_LongTime : é•¿æŒ‰äº‹ä»¶æ—¶é—´
+*			 _RepeatSpeed : è¿å‘é€Ÿåº¦
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 void bsp_SetKeyParam(uint8_t _ucKeyID, uint16_t _LongTime, uint8_t  _RepeatSpeed)
 {
-	s_tBtn[_ucKeyID].LongTime = _LongTime;			/* ³¤°´Ê±¼ä 0 ±íÊ¾²»¼ì²â³¤°´¼üÊÂ¼ş */
-	s_tBtn[_ucKeyID].RepeatSpeed = _RepeatSpeed;			/* °´¼üÁ¬·¢µÄËÙ¶È£¬0±íÊ¾²»Ö§³ÖÁ¬·¢ */
-	s_tBtn[_ucKeyID].RepeatCount = 0;						/* Á¬·¢¼ÆÊıÆ÷ */
+	s_tBtn[_ucKeyID].LongTime = _LongTime;			/* é•¿æŒ‰æ—¶é—´ 0 è¡¨ç¤ºä¸æ£€æµ‹é•¿æŒ‰é”®äº‹ä»¶ */
+	s_tBtn[_ucKeyID].RepeatSpeed = _RepeatSpeed;			/* æŒ‰é”®è¿å‘çš„é€Ÿåº¦ï¼Œ0è¡¨ç¤ºä¸æ”¯æŒè¿å‘ */
+	s_tBtn[_ucKeyID].RepeatCount = 0;						/* è¿å‘è®¡æ•°å™¨ */
 }
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_ClearKey
-*	¹¦ÄÜËµÃ÷: Çå¿Õ°´¼üFIFO»º³åÇø
-*	ĞÎ    ²Î£ºÎŞ
-*	·µ »Ø Öµ: °´¼ü´úÂë
+*	å‡½ æ•° å: bsp_ClearKey
+*	åŠŸèƒ½è¯´æ˜: æ¸…ç©ºæŒ‰é”®FIFOç¼“å†²åŒº
+*	å½¢    å‚ï¼šæ— 
+*	è¿” å› å€¼: æŒ‰é”®ä»£ç 
 *********************************************************************************************************
 */
 void bsp_ClearKey(void)
@@ -243,108 +243,108 @@ void bsp_ClearKey(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_InitKeyHard
-*	¹¦ÄÜËµÃ÷: ÅäÖÃ°´¼ü¶ÔÓ¦µÄGPIO
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_InitKeyHard
+*	åŠŸèƒ½è¯´æ˜: é…ç½®æŒ‰é”®å¯¹åº”çš„GPIO
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 static void bsp_InitKeyHard(void)
 {
 	GPIO_InitTypeDef  GPIO_InitStructure;
 
-	/* Ê¹ÄÜGPIOBÊ±ÖÓ */
+	/* ä½¿èƒ½GPIOBæ—¶é’Ÿ */
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
 
 	
-	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//ÅäÖÃPB0ÎªÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//ÅäÖÃPB0´øÉÏÀ­ÊäÈë		
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //ËÙ¶ÈÎª50MHZ
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//é…ç½®å¯¹åº”å¼•è„šä¸ºè¾“å…¥æ¨¡å¼
+	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//é…ç½®å¯¹åº”å¼•è„šå¸¦ä¸Šæ‹‰è¾“å…¥		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //é€Ÿåº¦ä¸º50MHZ
 	
-	/* ÅäÖÃKEY_MENU_PinÏàÓ¦Òı½Å*/
+		/* è®¾ç½®KEY_MENU_Pinå¯¹åº”çš„æŒ‰é”® */
 	GPIO_InitStructure.GPIO_Pin = KEY_MENU_Pin;	
-	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//ÅäÖÃPB0ÎªÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//ÅäÖÃPB0´øÉÏÀ­ÊäÈë		
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //ËÙ¶ÈÎª50MHZ	
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//é…ç½®å¯¹åº”å¼•è„šä¸ºè¾“å…¥æ¨¡å¼
+	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//é…ç½®å¯¹åº”å¼•è„šå¸¦ä¸Šæ‹‰è¾“å…¥		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //é€Ÿåº¦ä¸º50MHZ
 	GPIO_Init(KEY_MENU_GPIO_Port, &GPIO_InitStructure);
 
-	/* ÅäÖÃKEY_UP_PinÏàÓ¦Òı½Å*/
+		/* è®¾ç½®KEY_UP_Pinå¯¹åº”çš„æŒ‰é”® */
 	GPIO_InitStructure.GPIO_Pin = KEY_UP_Pin;	
-	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//ÅäÖÃPB0ÎªÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//ÅäÖÃPB0´øÉÏÀ­ÊäÈë		
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //ËÙ¶ÈÎª50MHZ	
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//é…ç½®å¯¹åº”å¼•è„šä¸ºè¾“å…¥æ¨¡å¼
+	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//é…ç½®å¯¹åº”å¼•è„šå¸¦ä¸Šæ‹‰è¾“å…¥		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //é€Ÿåº¦ä¸º50MHZ
 	GPIO_Init(KEY_UP_GPIO_Port, &GPIO_InitStructure);
 	
-	/* ÅäÖÃKEY_DOWN_PinÏàÓ¦Òı½Å*/
+		/* è®¾ç½®KEY_DOWN_Pinå¯¹åº”çš„æŒ‰é”® */
 	GPIO_InitStructure.GPIO_Pin = KEY_DOWN_Pin;		
-	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//ÅäÖÃPB0ÎªÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//ÅäÖÃPB0´øÉÏÀ­ÊäÈë		
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //ËÙ¶ÈÎª50MHZ	
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//é…ç½®å¯¹åº”å¼•è„šä¸ºè¾“å…¥æ¨¡å¼
+	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//é…ç½®å¯¹åº”å¼•è„šå¸¦ä¸Šæ‹‰è¾“å…¥		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //é€Ÿåº¦ä¸º50MHZ
 	GPIO_Init(KEY_DOWN_GPIO_Port, &GPIO_InitStructure);
 
-	/* ÅäÖÃKEY_RETURN_PinÏàÓ¦Òı½Å*/
+		/* è®¾ç½®KEY_RETURN_Pinå¯¹åº”çš„æŒ‰é”® */
 	GPIO_InitStructure.GPIO_Pin = KEY_RETURN_Pin;	
-	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//ÅäÖÃPB0ÎªÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//ÅäÖÃPB0´øÉÏÀ­ÊäÈë		
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //ËÙ¶ÈÎª50MHZ	
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//é…ç½®å¯¹åº”å¼•è„šä¸ºè¾“å…¥æ¨¡å¼
+	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//é…ç½®å¯¹åº”å¼•è„šå¸¦ä¸Šæ‹‰è¾“å…¥		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //é€Ÿåº¦ä¸º50MHZ
 	GPIO_Init(KEY_RETURN_GPIO_Port, &GPIO_InitStructure);
 	
-	/* ÅäÖÃKEY_ONOFF_PinÏàÓ¦Òı½Å*/
+		/* è®¾ç½®KEY_ONOFF_Pinå¯¹åº”çš„æŒ‰é”® */
 	GPIO_InitStructure.GPIO_Pin = KEY_ONOFF_Pin;
-	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//ÅäÖÃPB0ÎªÊäÈëÄ£Ê½
-	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//ÅäÖÃPB0´øÉÏÀ­ÊäÈë		
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //ËÙ¶ÈÎª50MHZ	
+	GPIO_InitStructure.GPIO_Mode = 	GPIO_Mode_IN;			//é…ç½®å¯¹åº”å¼•è„šä¸ºè¾“å…¥æ¨¡å¼
+	GPIO_InitStructure.GPIO_PuPd =  GPIO_PuPd_UP;			//é…ç½®å¯¹åº”å¼•è„šå¸¦ä¸Šæ‹‰è¾“å…¥		
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;	    //é€Ÿåº¦ä¸º50MHZ
 	GPIO_Init(KEY_ONOFF_GPIO_Port, &GPIO_InitStructure);
 }
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_InitKeyVar
-*	¹¦ÄÜËµÃ÷: ³õÊ¼»¯°´¼ü±äÁ¿
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_InitKeyVar
+*	åŠŸèƒ½è¯´æ˜: åˆå§‹åŒ–æŒ‰é”®å˜é‡
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 static void bsp_InitKeyVar(void)
 {
 	uint8_t i;
 
-	/* ¶Ô°´¼üFIFO¶ÁĞ´Ö¸ÕëÇåÁã */
+	/* å¯¹æŒ‰é”®FIFOè¯»å†™æŒ‡é’ˆæ¸…é›¶ */
 	s_tKey.Read = 0;
 	s_tKey.Write = 0;
 	s_tKey.Read2 = 0;
 
-	/* ¸øÃ¿¸ö°´¼ü½á¹¹Ìå³ÉÔ±±äÁ¿¸³Ò»×éÈ±Ê¡Öµ */
+	/* ç»™æ¯ä¸ªæŒ‰é”®ç»“æ„ä½“æˆå‘˜å˜é‡èµ‹ä¸€ç»„ç¼ºçœå€¼ */
 	for (i = 0; i < KEY_COUNT; i++)
 	{
-		s_tBtn[i].LongTime = KEY_LONG_TIME;			/* ³¤°´Ê±¼ä 0 ±íÊ¾²»¼ì²â³¤°´¼üÊÂ¼ş */
-		s_tBtn[i].Count = KEY_FILTER_TIME / 2;		/* ¼ÆÊıÆ÷ÉèÖÃÎªÂË²¨Ê±¼äµÄÒ»°ë */
-		s_tBtn[i].State = 0;							/* °´¼üÈ±Ê¡×´Ì¬£¬0ÎªÎ´°´ÏÂ */
-		//s_tBtn[i].KeyCodeDown = 3 * i + 1;				/* °´¼ü°´ÏÂµÄ¼üÖµ´úÂë */
-		//s_tBtn[i].KeyCodeUp   = 3 * i + 2;				/* °´¼üµ¯ÆğµÄ¼üÖµ´úÂë */
-		//s_tBtn[i].KeyCodeLong = 3 * i + 3;				/* °´¼ü±»³ÖĞø°´ÏÂµÄ¼üÖµ´úÂë */
-		s_tBtn[i].RepeatSpeed = 0;						/* °´¼üÁ¬·¢µÄËÙ¶È£¬0±íÊ¾²»Ö§³ÖÁ¬·¢ */
-		s_tBtn[i].RepeatCount = 0;						/* Á¬·¢¼ÆÊıÆ÷ */
+		s_tBtn[i].LongTime = KEY_LONG_TIME;			/* é•¿æŒ‰æ—¶é—´ 0 è¡¨ç¤ºä¸æ£€æµ‹é•¿æŒ‰é”®äº‹ä»¶ */
+		s_tBtn[i].Count = KEY_FILTER_TIME / 2;		/* è®¡æ•°å™¨è®¾ç½®ä¸ºæ»¤æ³¢æ—¶é—´çš„ä¸€åŠ */
+		s_tBtn[i].State = 0;							/* æŒ‰é”®ç¼ºçœçŠ¶æ€ï¼Œ0ä¸ºæœªæŒ‰ä¸‹ */
+		//s_tBtn[i].KeyCodeDown = 3 * i + 1;				/* æŒ‰é”®æŒ‰ä¸‹çš„é”®å€¼ä»£ç  */
+		//s_tBtn[i].KeyCodeUp   = 3 * i + 2;				/* æŒ‰é”®å¼¹èµ·çš„é”®å€¼ä»£ç  */
+		//s_tBtn[i].KeyCodeLong = 3 * i + 3;				/* æŒ‰é”®è¢«æŒç»­æŒ‰ä¸‹çš„é”®å€¼ä»£ç  */
+		s_tBtn[i].RepeatSpeed = 0;						/* æŒ‰é”®è¿å‘çš„é€Ÿåº¦ï¼Œ0è¡¨ç¤ºä¸æ”¯æŒè¿å‘ */
+		s_tBtn[i].RepeatCount = 0;						/* è¿å‘è®¡æ•°å™¨ */
 	}
 
-	/* Èç¹ûĞèÒªµ¥¶À¸ü¸ÄÄ³¸ö°´¼üµÄ²ÎÊı£¬¿ÉÒÔÔÚ´Ëµ¥¶ÀÖØĞÂ¸³Öµ */
-	/* ±ÈÈç£¬ÎÒÃÇÏ£Íû°´¼ü1°´ÏÂ³¬¹ı1Ãëºó£¬×Ô¶¯ÖØ·¢ÏàÍ¬¼üÖµ */
+	/* å¦‚æœéœ€è¦å•ç‹¬æ›´æ”¹æŸä¸ªæŒ‰é”®çš„å‚æ•°ï¼Œå¯ä»¥åœ¨æ­¤å•ç‹¬é‡æ–°èµ‹å€¼ */
+	/* æ¯”å¦‚ï¼Œæˆ‘ä»¬å¸Œæœ›æŒ‰é”®1æŒ‰ä¸‹è¶…è¿‡1ç§’åï¼Œè‡ªåŠ¨é‡å‘ç›¸åŒé”®å€¼ */
 	s_tBtn[KID_K1].LongTime = 100;
-	//s_tBtn[KID_K1].RepeatSpeed = 5;	/* Ã¿¸ô50ms×Ô¶¯·¢ËÍ¼üÖµ */
+	//s_tBtn[KID_K1].RepeatSpeed = 5;	/* æ¯éš”50msè‡ªåŠ¨å‘é€é”®å€¼ */
 
 	s_tBtn[KID_K2].LongTime = 100;
-	//s_tBtn[KID_K2].RepeatSpeed = 5;	/* Ã¿¸ô50ms×Ô¶¯·¢ËÍ¼üÖµ */
+	//s_tBtn[KID_K2].RepeatSpeed = 5;	/* æ¯éš”50msè‡ªåŠ¨å‘é€é”®å€¼ */
 	
 //	s_tBtn[KID_JOY_D].LongTime = 100;
-//	s_tBtn[KID_JOY_D].RepeatSpeed = 5;	/* Ã¿¸ô50ms×Ô¶¯·¢ËÍ¼üÖµ */
+//	s_tBtn[KID_JOY_D].RepeatSpeed = 5;	/* æ¯éš”50msè‡ªåŠ¨å‘é€é”®å€¼ */
 
 //	s_tBtn[KID_JOY_L].LongTime = 100;
-//	s_tBtn[KID_JOY_L].RepeatSpeed = 5;	/* Ã¿¸ô50ms×Ô¶¯·¢ËÍ¼üÖµ */
+//	s_tBtn[KID_JOY_L].RepeatSpeed = 5;	/* æ¯éš”50msè‡ªåŠ¨å‘é€é”®å€¼ */
 
 //	s_tBtn[KID_JOY_R].LongTime = 100;
-//	s_tBtn[KID_JOY_R].RepeatSpeed = 5;	/* Ã¿¸ô50ms×Ô¶¯·¢ËÍ¼üÖµ */
+//	s_tBtn[KID_JOY_R].RepeatSpeed = 5;	/* æ¯éš”50msè‡ªåŠ¨å‘é€é”®å€¼ */
 
-	/* ÅĞ¶Ï°´¼ü°´ÏÂµÄº¯Êı */
+	/* åˆ¤æ–­æŒ‰é”®æŒ‰ä¸‹çš„å‡½æ•° */
 	s_tBtn[0].IsKeyDownFunc = IsKeyDown1;
 	s_tBtn[1].IsKeyDownFunc = IsKeyDown2;
 	s_tBtn[2].IsKeyDownFunc = IsKeyDown3;
@@ -355,10 +355,10 @@ static void bsp_InitKeyVar(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_DetectKey
-*	¹¦ÄÜËµÃ÷: ¼ì²âÒ»¸ö°´¼ü¡£·Ç×èÈû×´Ì¬£¬±ØĞë±»ÖÜÆÚĞÔµÄµ÷ÓÃ¡£
-*	ĞÎ    ²Î:  °´¼ü½á¹¹±äÁ¿Ö¸Õë
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_DetectKey
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹ä¸€ä¸ªæŒ‰é”®ã€‚éé˜»å¡çŠ¶æ€ï¼Œå¿…é¡»è¢«å‘¨æœŸæ€§çš„è°ƒç”¨ã€‚
+*	å½¢    å‚:  æŒ‰é”®ç»“æ„å˜é‡æŒ‡é’ˆ
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 static void bsp_DetectKey(uint8_t i)
@@ -366,17 +366,17 @@ static void bsp_DetectKey(uint8_t i)
 	KEY_T *pBtn;
 
 	/*
-		Èç¹ûÃ»ÓĞ³õÊ¼»¯°´¼üº¯Êı£¬Ôò±¨´í
+		å¦‚æœæ²¡æœ‰åˆå§‹åŒ–æŒ‰é”®å‡½æ•°ï¼Œåˆ™æŠ¥é”™
 		if (s_tBtn[i].IsKeyDownFunc == 0)
 		{
 //			printf("Fault : DetectButton(), s_tBtn[i].IsKeyDownFunc undefine");
 		}
 	*/
-/*°´¼ü°´ÏÂ*/
+/*æŒ‰é”®æŒ‰ä¸‹*/
 	pBtn = &s_tBtn[i];
 	if (pBtn->IsKeyDownFunc()==1)
 	{
-		/*¶Ì°´¼ü£¬Èí¼ş´¦ÀíÏû¶¶*/
+		/*çŸ­æŒ‰é”®ï¼Œè½¯ä»¶å¤„ç†æ¶ˆæŠ–*/
 		if (pBtn->Count < KEY_FILTER_TIME)
 		{
 			pBtn->Count = KEY_FILTER_TIME;
@@ -391,19 +391,19 @@ static void bsp_DetectKey(uint8_t i)
 			{
 				pBtn->State = 1;
 
-				/* ·¢ËÍ°´Å¥°´ÏÂµÄÏûÏ¢ */
+				/* å‘é€æŒ‰é’®æŒ‰ä¸‹çš„æ¶ˆæ¯ */
 				bsp_PutKey((uint8_t)(3 * i + 1));
 			}
 
-			/*´¦Àí³¤°´¼ü*/
+			/*å¤„ç†é•¿æŒ‰é”®*/
 			if (pBtn->LongTime > 0)
 			{
 				if (pBtn->LongCount < pBtn->LongTime)
 				{
-					/* ·¢ËÍ°´Å¥³¤°´ÏÂµÄÏûÏ¢ */
+					/* å‘é€æŒ‰é’®é•¿æŒ‰ä¸‹çš„æ¶ˆæ¯ */
 					if (++pBtn->LongCount == pBtn->LongTime)
 					{
-						/* ¼üÖµ·ÅÈë°´¼üFIFO */
+						/* é”®å€¼æ”¾å…¥æŒ‰é”®FIFO */
 						bsp_PutKey((uint8_t)(3 * i + 3));
 					}
 				}
@@ -414,7 +414,7 @@ static void bsp_DetectKey(uint8_t i)
 						if (++pBtn->RepeatCount >= pBtn->RepeatSpeed)
 						{
 							pBtn->RepeatCount = 0;
-							/* ³¤°´¼üºó£¬Ã¿¸ôpBtn->RepeatSpeed*10ms·¢ËÍ1¸ö°´¼ü */
+							/* é•¿æŒ‰é”®åï¼Œæ¯éš”pBtn->RepeatSpeed*10mså‘é€1ä¸ªæŒ‰é”® */
 							bsp_PutKey((uint8_t)(3 * i + 1));
 						}
 					}
@@ -438,7 +438,7 @@ static void bsp_DetectKey(uint8_t i)
 			{
 				pBtn->State = 0;
 
-				/* ËÉ¿ª°´¼üKEY_FILTER_TIMEºó ·¢ËÍ°´Å¥µ¯ÆğµÄÏûÏ¢ */
+				/* æ¾å¼€æŒ‰é”®KEY_FILTER_TIMEå å‘é€æŒ‰é’®å¼¹èµ·çš„æ¶ˆæ¯ */
 				bsp_PutKey((uint8_t)(3 * i + 2));
 			}
 		}
@@ -450,10 +450,10 @@ static void bsp_DetectKey(uint8_t i)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: bsp_KeyScan
-*	¹¦ÄÜËµÃ÷: É¨ÃèËùÓĞ°´¼ü¡£·Ç×èÈû£¬±»systickÖĞ¶ÏÖÜÆÚĞÔµÄµ÷ÓÃ
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: bsp_KeyScan
+*	åŠŸèƒ½è¯´æ˜: æ‰«ææ‰€æœ‰æŒ‰é”®ã€‚éé˜»å¡ï¼Œè¢«systickä¸­æ–­å‘¨æœŸæ€§çš„è°ƒç”¨
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 void bsp_KeyScan(void)
@@ -468,10 +468,10 @@ void bsp_KeyScan(void)
 
 /*
 *********************************************************************************************************
-*	º¯ Êı Ãû: checkKeyPresses
-*	¹¦ÄÜËµÃ÷: ¼ì²â°´¼üÊÂ¼ş²¢Ö´ĞĞÏàÓ¦µÄ²Ù×÷
-*	ĞÎ    ²Î:  ÎŞ
-*	·µ »Ø Öµ: ÎŞ
+*	å‡½ æ•° å: checkKeyPresses
+*	åŠŸèƒ½è¯´æ˜: æ£€æµ‹æŒ‰é”®äº‹ä»¶å¹¶æ‰§è¡Œç›¸åº”çš„æ“ä½œ
+*	å½¢    å‚:  æ— 
+*	è¿” å› å€¼: æ— 
 *********************************************************************************************************
 */
 void checkKeyPresses(void)
@@ -483,7 +483,7 @@ void checkKeyPresses(void)
 	ucKeyCode = bsp_GetKey(); 
 	if (ucKeyCode != KEY_NONE)
 	{
-		if(beep_state==1)//´¦Àí·äÃùÆ÷±¨¾¯Ê±²Ù×÷
+		if(beep_state==1)//å¤„ç†èœ‚é¸£å™¨æŠ¥è­¦æ—¶æ“ä½œ
 		{
 			handleBeepState(&bcout);
 			return;
@@ -491,25 +491,25 @@ void checkKeyPresses(void)
 		
 		switch (ucKeyCode)	
 		{	
-			case KEY_DOWN_K0://°´ÏÂ
+			case KEY_DOWN_K0://æŒ‰ä¸‹
 				Key_Down_Flag=1;
 				if(MenuFlag)
 					Menu_KEY0_OK=1;
 				break;
 
-			case KEY_LONG_K0://³¤°´
+			case KEY_LONG_K0://é•¿æŒ‰
 				Key_Down_Flag=1;
 				if(MenuFlag!=1)
 					MenuFlag =1;
 				break;	
 			
-			case KEY_DOWN_K1://°´ÏÂ
+			case KEY_DOWN_K1://æŒ‰ä¸‹
 				Key_Down_Flag=1;
 				if(MenuFlag)
 					Menu_KEY1_UP = 1;
 				break;
 				
-			case KEY_UP_K1://µ¯Æğ
+			case KEY_UP_K1://å¼¹èµ·
 				Key_Long_Flag=0;
 				break;
 			
@@ -554,15 +554,15 @@ void checkKeyPresses(void)
 				break;
 				
 			case KEY_UP_K4:
-				if(MenuFlag!=1 && Key4_turn==0)//Ã»ÓĞ½øÈ¥²Ëµ¥Ê±ºò
-					RevRelay();//·­×ª¼ÌµçÆ÷
+				if(MenuFlag!=1 && Key4_turn==0)//æ²¡æœ‰è¿›å»èœå•æ—¶å€™
+					RevRelay();//ç¿»è½¬ç»§ç”µå™¨
 				
 				break;
 			
 			case KEY_LONG_K4:
 				Key_Down_Flag=1;
 				Key4_turn=1;
-				if(MenuFlag!=1)//Ã»ÓĞ½øÈ¥²Ëµ¥Ê±ºò
+				if(MenuFlag!=1)//æ²¡æœ‰è¿›å»èœå•æ—¶å€™
 				{
 					Led_Auto_Toggle();
 					FLASH_Save_User_Data.switchMode ^=1;
@@ -574,7 +574,7 @@ void checkKeyPresses(void)
 			default:
 				break;
 		}
-		if(Key_Down_Flag==1&&MenuFlag)//ÔÚ²Ëµ¥ÀïÃæÊ±ºòÎŞ°´¼ü°´ÏÂ³¬Ê±²Ù×÷
+		if(Key_Down_Flag==1&&MenuFlag)//åœ¨èœå•é‡Œé¢æ—¶å€™æ— æŒ‰é”®æŒ‰ä¸‹è¶…æ—¶æ“ä½œ
 		{
 			setMenuTimeout(&Key_Down_Flag,&Menu_timeout);
 		}
@@ -582,5 +582,5 @@ void checkKeyPresses(void)
 
 }
 
-/***************************** °²¸»À³µç×Ó www.armfly.com (END OF FILE) *********************************/
+/***************************** å®‰å¯Œè±ç”µå­ www.armfly.com (END OF FILE) *********************************/
 

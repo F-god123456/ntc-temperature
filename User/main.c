@@ -36,7 +36,7 @@ int main(void)
 	
 	NIXI_GPIO_Init();		 //数码管初始化
 	
-	NTC_Init();		 			//NTC初始化
+	NTC_Init();		 		 //NTC初始化
 	
 	Power_Init();			 //电源初始化
 	
@@ -52,7 +52,7 @@ int main(void)
 		
 		EnvConditions_Show();   //温度切换显示
 		
-//		checkKeyPresses();      //扫描按键状态
+		checkKeyPresses();      //扫描按键状态
 		
 		ExecuteMenuTask();		//执行菜单任务
 		

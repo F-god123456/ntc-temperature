@@ -7,7 +7,7 @@
 /*Òý½Å¶¨Òå*/
 // KEY_MENU
 #define KEY_MENU_GPIO_Port        GPIOB     
-#define KEY_MENU_Pin              GPIO_Pin_0 
+#define KEY_MENU_Pin              GPIO_Pin_9 
 //KEY_UP                          
 #define KEY_UP_GPIO_Port          GPIOB
 #define KEY_UP_Pin                GPIO_Pin_1 

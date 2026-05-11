@@ -17,10 +17,9 @@ volatile unsigned int  ADC_BufCnt=0;            //采集量变量
 /*标志位*/
 volatile uint8_t time_over_flag=0;//1s到达标志位
 uint8_t time_count=0;//1s到达次数
-uint8_t elapsed_us = 0;//记录时间us单位
 
 /**************************************************************************************
- * 描  述 : 初始化ADC1 + PA0 (ADC_IN0)，配置为连续转换+中断模式
+ * 描  述 : 初始化NTC_ADC + NTC_GPIO_PORT, NTC_ADC_CHANNEL，配置为连续转换+中断模式
  * 入  参 : 无
  * 返回值 : 无
  **************************************************************************************/
@@ -30,21 +29,21 @@ void ADC1_Init(void)
 	ADC_InitTypeDef ADC_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 
-	/* 使能ADC1时钟和PA口时钟 */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
+	/* 使能ADC时钟和GPIO时钟 */
+	RCC_APB2PeriphClockCmd(NTC_ADC_CLK, ENABLE);
+	RCC_AHBPeriphClockCmd(NTC_GPIO_CLK, ENABLE);
 
 	/* ADC分频：PCLK/4 = 48MHz/4 = 12MHz */
 	RCC_ADCCLKConfig(RCC_ADCCLK_PCLK_Div4);
 
-	/* 配置PA0为模拟输入 */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+	/* 配置NTC_GPIO_PIN为模拟输入 */
+	GPIO_InitStructure.GPIO_Pin = NTC_GPIO_PIN;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;//GPIO_PuPd_NOPULL
+	GPIO_Init(NTC_GPIO_PORT, &GPIO_InitStructure);
 
 	/* 复位ADC寄存器 */
-	ADC_DeInit(ADC1);
+	ADC_DeInit(NTC_ADC);
 
 	/* ADC配置 */
 	ADC_StructInit(&ADC_InitStructure);
@@ -53,34 +52,33 @@ void ADC1_Init(void)
 	ADC_InitStructure.ADC_ExternalTrigConvEdge = ADC_ExternalTrigConvEdge_None; /* 软件触发 */
 	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
 	ADC_InitStructure.ADC_ScanDirection = ADC_ScanDirection_Upward;
-	ADC_Init(ADC1, &ADC_InitStructure);
+	ADC_Init(NTC_ADC, &ADC_InitStructure);
 
-	/* 配置PA0采样通道（ADC_Channel_0），采样周期239.5 */
-	ADC_ChannelConfig(ADC1, ADC_Channel_8, ADC_SampleTime_239_5Cycles);
+	/* 配置NTC_GPIO_PIN为ADC采样通道，采样周期239.5 */
+	ADC_ChannelConfig(NTC_ADC, NTC_ADC_CHANNEL, ADC_SampleTime_239_5Cycles);
 
 	/* 使能EOC中断 */
-	ADC_ITConfig(ADC1, ADC_IT_EOC, ENABLE);
+	ADC_ITConfig(NTC_ADC, ADC_IT_EOC, ENABLE);
 
 	/* ADC校准 */
-	ADC_GetCalibrationFactor(ADC1);
+	ADC_GetCalibrationFactor(NTC_ADC);
 
 	/* 使能ADC */
-	ADC_Cmd(ADC1, ENABLE);
-	while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_ADRDY))
-		;
+	ADC_Cmd(NTC_ADC, ENABLE);
+	while (!ADC_GetFlagStatus(NTC_ADC, ADC_FLAG_ADRDY));
 
 	/* NVIC配置 */
-	NVIC_InitStructure.NVIC_IRQChannel = ADC1_COMP_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannel = NTC_ADC_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPriority = 2;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_Init(&NVIC_InitStructure);
 
 	/* 软件触发，启动连续转换 */
-	ADC_StartOfConversion(ADC1);
+	ADC_StartOfConversion(NTC_ADC);
 }
 
 /**************************************************************************************
- * 描  述 : NTC初始化（调用ADC1初始化，配置PA0为ADC采样通道）
+ * 描  述 : NTC初始化（调用NTC_ADC初始化，配置NTC_GPIO_PIN为ADC采样通道）
  * 入  参 : 无
  * 返回值 : 无
  **************************************************************************************/
@@ -90,16 +88,16 @@ void NTC_Init(void)
 }
 
 /**************************************************************************************
- * 描  述 : ADC1中断服务函数 —— 累加ADC值，满ADC_SAMPLE_COUNT次后计算平均和电压
+ * 描  述 : NTC_ADC中断服务函数 —— 累加ADC值，满ADC_SAMPLE_COUNT次后计算平均和电压
  * 入  参 : 无
  * 返回值 : 无
  **************************************************************************************/
 void ADC1_IRQHandler(void)
 {
 	unsigned int adcPtr;
-	if (ADC_GetITStatus(ADC1, ADC_IT_EOC) != RESET)
+	if (ADC_GetITStatus(NTC_ADC, ADC_IT_EOC) != RESET)
 	{
-		adcPtr= ADC_GetConversionValue(ADC1);	// 累加ADC值
+		adcPtr= ADC_GetConversionValue(NTC_ADC);	// 累加ADC值
 		ADC_Buf[ADC_BufCnt++]=adcPtr; 
 
 		if (ADC_BufCnt >= NUMSAMP)	// 达到指定采样次数
@@ -107,7 +105,7 @@ void ADC1_IRQHandler(void)
 			 ADC_BufCnt=0;	
 		}
 
-		ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);	// 清除EOC中断标志
+		ADC_ClearITPendingBit(NTC_ADC, ADC_IT_EOC);	// 清除EOC中断标志
 	}
 }
 
